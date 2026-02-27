@@ -112,7 +112,7 @@ function App() {
 
   const playFromYouTube = (query, fallbackSong) => {
     const encoded = encodeURIComponent(query)
-    const src = `https://www.youtube.com/embed?listType=search&list=${encoded}&autoplay=1`
+    const src = `https://www.youtube.com/embed?search_query=${encoded}&autoplay=1`
     setCurrentVideoSrc(src)
     if (fallbackSong) {
       setCurrentSong(fallbackSong)
