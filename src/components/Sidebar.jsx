@@ -1,11 +1,25 @@
 import React from 'react'
+import { useAuth } from '../contexts/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 function Sidebar({ activeView, onChangeView, onCreatePlaylist, onOpenLiked }) {
+    const { logout, currentUser } = useAuth()
+    const navigate = useNavigate()
+
+    const handleLogout = async () => {
+        try {
+            await logout()
+            navigate('/login')
+        } catch (error) {
+            console.error('Failed to logout:', error)
+        }
+    }
+
     return (
         <aside className="flex h-screen w-64 flex-col bg-black text-zinc-200 px-4 py-6">
             {/* Logo */}
             <div className="mb-6 flex items-center gap-2 px-2">
-                <div className="h-8 w-8 rounded-full bg-emerald-500" />
+                <img src="src/assets/platypus.jpg" alt="Platipy" className="h-10 w-10  rounded-full" />
                 <span className="text-lg font-semibold tracking-tight">Platipy</span>
             </div>
 
@@ -72,10 +86,23 @@ function Sidebar({ activeView, onChangeView, onCreatePlaylist, onOpenLiked }) {
             </div>
 
             {/* Footer */}
-            <div className="mt-4 text-[11px] text-zinc-500">
-                <button className="hover:text-zinc-300">Cookies</button>
-                <span className="mx-1">•</span>
-                <button className="hover:text-zinc-300">Privacy</button>
+            <div className="mt-4 space-y-2">
+                <div className="flex items-center gap-2 rounded-md bg-zinc-900 px-3 py-2">
+                    <div className="h-7 w-7 rounded-full bg-emerald-500 flex items-center justify-center text-xs font-bold text-white">
+                        {currentUser?.email?.[0]?.toUpperCase() || 'U'}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <p className="text-xs font-medium text-white truncate">
+                            {currentUser?.email || 'User'}
+                        </p>
+                    </div>
+                </div>
+                <button
+                    onClick={handleLogout}
+                    className="w-full rounded-md bg-zinc-800 px-3 py-2 text-xs font-medium text-zinc-300 hover:bg-zinc-700 hover:text-white transition"
+                >
+                    Log out
+                </button>
             </div>
         </aside>
     )

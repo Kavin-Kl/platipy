@@ -1,37 +1,48 @@
-import React from 'react'
-
-function parseDurationToSeconds(duration) {
-  if (!duration || typeof duration !== 'string') return 0
-  const [m, s] = duration.split(':').map(Number)
-  if (Number.isNaN(m) || Number.isNaN(s)) return 0
-  return m * 60 + s
-}
-
-function progressToPercent(currentLabel, durationLabel) {
-  const currentSeconds = parseDurationToSeconds(currentLabel)
-  const totalSeconds = parseDurationToSeconds(durationLabel)
-  if (!totalSeconds) return 0
-  return Math.min(100, (currentSeconds / totalSeconds) * 100)
-}
+import React, { useState } from 'react'
 
 function PlayerBar({
   currentSong,
   isPlaying,
   progress,
+  duration,
+  volume,
   onPlayPause,
   onNext,
   onPrev,
+  onVolumeChange,
 }) {
   const title = currentSong?.title ?? 'Select a song'
   const artist = currentSong?.artist ?? ''
-  const duration = currentSong?.duration ?? '--:--'
-  const currentTimeLabel = currentSong ? progress : '0:00'
+  const currentTimeLabel = progress || '0:00'
+  const durationLabel = duration || '--:--'
+
+  // Calculate progress percentage
+  const parseTime = (timeStr) => {
+    const [m, s] = timeStr.split(':').map(Number)
+    return (m || 0) * 60 + (s || 0)
+  }
+
+  const currentSeconds = parseTime(currentTimeLabel)
+  const totalSeconds = parseTime(durationLabel)
+  const progressPercent = totalSeconds > 0 ? (currentSeconds / totalSeconds) * 100 : 0
 
   return (
     <footer className="fixed bottom-0 left-0 right-0 flex h-20 items-center justify-between border-t border-zinc-800 bg-gradient-to-t from-black to-zinc-950/95 px-4 text-sm text-zinc-200">
       {/* Current track */}
       <div className="flex min-w-0 items-center gap-3">
-        <div className="h-14 w-14 rounded-sm bg-emerald-500" />
+        {currentSong?.thumbnail ? (
+          <img
+            src={currentSong.thumbnail}
+            alt={title}
+            className="h-14 w-14 rounded object-cover"
+          />
+        ) : (
+          <div className="h-14 w-14 rounded-sm bg-emerald-500 flex items-center justify-center">
+            <svg className="h-8 w-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
+            </svg>
+          </div>
+        )}
         <div className="min-w-0">
           <div className="truncate text-sm">{title}</div>
           {artist && (
@@ -68,10 +79,10 @@ function PlayerBar({
           <div className="relative h-1 flex-1 rounded-full bg-zinc-700">
             <div
               className="absolute inset-y-0 left-0 rounded-full bg-emerald-400"
-              style={{ width: `${currentSong ? progressToPercent(progress, duration) : 0}%` }}
+              style={{ width: `${progressPercent}%` }}
             />
           </div>
-          <span>{duration}</span>
+          <span>{durationLabel}</span>
         </div>
       </div>
 
@@ -81,10 +92,18 @@ function PlayerBar({
         <button className="hover:text-zinc-100">Queue</button>
         <button className="hover:text-zinc-100">Devices</button>
         <div className="flex w-24 items-center gap-1">
-          <span className="text-[10px]">🔊</span>
-          <div className="relative h-1 flex-1 rounded-full bg-zinc-700">
-            <div className="absolute inset-y-0 left-0 w-2/3 rounded-full bg-zinc-300" />
-          </div>
+          <span className="text-[10px]">{volume === 0 ? '🔇' : volume < 50 ? '🔉' : '🔊'}</span>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={volume}
+            onChange={(e) => onVolumeChange && onVolumeChange(Number(e.target.value))}
+            className="h-1 w-full cursor-pointer appearance-none rounded-full bg-zinc-700 [&::-webkit-slider-thumb]:h-2 [&::-webkit-slider-thumb]:w-2 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white hover:[&::-webkit-slider-thumb]:bg-emerald-400"
+            style={{
+              background: `linear-gradient(to right, #34d399 0%, #34d399 ${volume}%, #3f3f46 ${volume}%, #3f3f46 100%)`,
+            }}
+          />
         </div>
       </div>
     </footer>

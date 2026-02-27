@@ -111,8 +111,10 @@ function App() {
   }
 
   const playFromYouTube = (query, fallbackSong) => {
+    // YouTube embed doesn't directly support search, but we can construct a working URL
+    // Using listType=search with proper encoding
     const encoded = encodeURIComponent(query)
-    const src = `https://www.youtube.com/embed?search_query=${encoded}&autoplay=1`
+    const src = `https://www.youtube-nocookie.com/embed?listType=search&list=${encoded}&autoplay=1&enablejsapi=1`
     setCurrentVideoSrc(src)
     if (fallbackSong) {
       setCurrentSong(fallbackSong)

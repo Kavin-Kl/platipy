@@ -10,9 +10,17 @@ function PlaylistGrid({ title, items }) {
             key={item.id}
             className="group flex flex-col rounded-md bg-zinc-900/60 p-3 text-left transition hover:bg-zinc-800"
           >
-            <div
-              className={`mb-3 aspect-square w-full rounded-md bg-gradient-to-br ${item.color}`}
-            />
+            {item.thumbnail ? (
+              <img
+                src={item.thumbnail}
+                alt={item.title}
+                className="mb-3 aspect-square w-full rounded-md object-cover shadow-lg"
+              />
+            ) : (
+              <div
+                className={`mb-3 aspect-square w-full rounded-md bg-gradient-to-br ${item.color}`}
+              />
+            )}
             <div className="mb-1 text-sm font-semibold text-zinc-50">
               {item.title}
             </div>
