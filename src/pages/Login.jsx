@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
+import platypus from "../assets/platypus.jpg"
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -53,7 +54,7 @@ export default function Login() {
       <div className="w-full max-w-md space-y-8 rounded-2xl bg-zinc-900/50 p-8 shadow-2xl backdrop-blur-sm">
         <div className="text-center">
           <div className="mb-2 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-green-500 to-emerald-600">
-            <img src="src/assets/platypus.jpg" alt="Platipy" className="h-16 w-16  rounded-full" />
+            <img src={platypus} alt="Platipy" className="h-16 w-16  rounded-full" />
           </div>
           <h2 className="text-3xl font-bold text-white">
             {isSignup ? 'Sign up for Platipy' : 'Log in to Platipy'}

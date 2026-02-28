@@ -6,6 +6,7 @@ import { Search } from 'lucide-react'
 import { Library } from 'lucide-react'
 import { Plus } from 'lucide-react'
 import { Heart } from 'lucide-react'
+import platypus from "../assets/platypus.jpg"
 
 function Sidebar({ activeView, onChangeView, onCreatePlaylist, onOpenLiked }) {
     const { logout, currentUser } = useAuth()
