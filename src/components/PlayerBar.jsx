@@ -1,4 +1,8 @@
 import React, { useState } from 'react'
+import { Pause } from 'lucide-react'
+import { Play } from 'lucide-react'
+import { SkipBack } from 'lucide-react'
+import { SkipForward } from 'lucide-react'
 
 function PlayerBar({
   currentSong,
@@ -58,20 +62,20 @@ function PlayerBar({
             className="text-zinc-400 hover:text-zinc-100"
             onClick={onPrev}
           >
-            {'<<'}
+            <SkipBack className='h-4 w-4' />
           </button>
           <button
             className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-black text-xs font-semibold"
             onClick={onPlayPause}
             disabled={!currentSong}
           >
-            {isPlaying ? '❚❚' : '▶'}
+            {isPlaying ? <Pause className='h-4 w-4 ' /> : <Play className='h-4 w-4' />}
           </button>
           <button
             className="text-zinc-400 hover:text-zinc-100"
             onClick={onNext}
           >
-            {'>>'}
+            <SkipForward className='h-4 w-4' />
           </button>
         </div>
         <div className="flex w-full items-center gap-2 text-[10px] text-zinc-400">

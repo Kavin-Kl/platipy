@@ -1,6 +1,11 @@
 import React from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
+import { House } from 'lucide-react'
+import { Search } from 'lucide-react'
+import { Library } from 'lucide-react'
+import { Plus } from 'lucide-react'
+import { Heart } from 'lucide-react'
 
 function Sidebar({ activeView, onChangeView, onCreatePlaylist, onOpenLiked }) {
     const { logout, currentUser } = useAuth()
@@ -29,21 +34,21 @@ function Sidebar({ activeView, onChangeView, onCreatePlaylist, onOpenLiked }) {
                     className={`flex w-full items-center gap-3 rounded-md px-2 py-2 hover:bg-zinc-800 ${activeView === 'home' ? 'text-white' : 'text-zinc-300'}`}
                     onClick={() => onChangeView && onChangeView('home')}
                 >
-                    <span className="inline-block h-5 w-5 rounded-sm bg-white" />
+                    <House />
                     <span>Home</span>
                 </button>
                 <button
                     className={`flex w-full items-center gap-3 rounded-md px-2 py-2 hover:bg-zinc-800 ${activeView === 'search' ? 'text-white' : 'text-zinc-300'}`}
                     onClick={() => onChangeView && onChangeView('search')}
                 >
-                    <span className="inline-block h-5 w-5 rounded-sm bg-zinc-300" />
+                    <Search />
                     <span>Search</span>
                 </button>
                 <button
                     className={`flex w-full items-center gap-3 rounded-md px-2 py-2 hover:bg-zinc-800 ${activeView === 'library' ? 'text-white' : 'text-zinc-300'}`}
                     onClick={() => onChangeView && onChangeView('library')}
                 >
-                    <span className="inline-block h-5 w-5 rounded-sm bg-zinc-300" />
+                    <Library />
                     <span>Your Library</span>
                 </button>
             </nav>
@@ -59,7 +64,7 @@ function Sidebar({ activeView, onChangeView, onCreatePlaylist, onOpenLiked }) {
                         if (onCreatePlaylist) onCreatePlaylist()
                     }}
                 >
-                    <span className="inline-block h-5 w-5 rounded-sm bg-zinc-500" />
+                    <Plus />
                     <span>Create Playlist</span>
                 </button>
                 <button
@@ -68,7 +73,7 @@ function Sidebar({ activeView, onChangeView, onCreatePlaylist, onOpenLiked }) {
                         if (onOpenLiked) onOpenLiked()
                     }}
                 >
-                    <span className="inline-block h-5 w-5 rounded-sm bg-emerald-500" />
+                    <Heart />
                     <span>Liked Songs</span>
                 </button>
             </div>
