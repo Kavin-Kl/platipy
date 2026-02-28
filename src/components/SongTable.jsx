@@ -74,14 +74,14 @@ function SongTable({ songs, currentSongId, onSongSelect, likedSongIds = [], onTo
                       e.stopPropagation()
                       onToggleLike && onToggleLike(song.id)
                     }}
-                    className="group p-2 hover:scale-110 transition"
+                    className="group p-3 hover:scale-110 transition rounded-lg hover:bg-zinc-700/50"
                     title="Like"
                   >
                     <svg
-                      className={`h-6 w-6 ${
+                      className={`h-8 w-8 ${
                         isLiked
                           ? 'fill-emerald-500 text-emerald-500'
-                          : 'fill-none text-zinc-400 group-hover:text-white'
+                          : 'fill-none text-zinc-300 group-hover:text-white'
                       }`}
                       stroke="currentColor"
                       strokeWidth="2"
@@ -102,11 +102,11 @@ function SongTable({ songs, currentSongId, onSongSelect, likedSongIds = [], onTo
                         }
                         setShowPlaylistMenu(showPlaylistMenu === song.id ? null : song.id)
                       }}
-                      className="group p-2 hover:scale-110 transition"
+                      className="group p-3 hover:scale-110 transition rounded-lg hover:bg-zinc-700/50"
                       title={playlists.length === 0 ? "Create a playlist first" : "Add to playlist"}
                     >
                       <svg
-                        className="h-6 w-6 text-zinc-400 group-hover:text-white"
+                        className="h-8 w-8 text-zinc-300 group-hover:text-white"
                         fill="none"
                         stroke="currentColor"
                         strokeWidth="2"

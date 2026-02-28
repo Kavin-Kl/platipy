@@ -5,6 +5,7 @@ function TopBar({ view, searchQuery, onSearchChange, onSearchSubmit }) {
   const { currentUser } = useAuth();
   const [initial, setInitial] = useState("");
   const [userName, setUserName] = useState("You");
+  const [greeting, setGreeting] = useState("Good afternoon");
 
   useEffect(() => {
     if (currentUser) {
@@ -16,6 +17,24 @@ function TopBar({ view, searchQuery, onSearchChange, onSearchSubmit }) {
       setInitial(displayName.charAt(0).toUpperCase());
     }
   }, [currentUser]);
+
+  useEffect(() => {
+    const updateGreeting = () => {
+      const hour = new Date().getHours();
+      if (hour < 12) {
+        setGreeting("Good morning");
+      } else if (hour < 18) {
+        setGreeting("Good afternoon");
+      } else {
+        setGreeting("Good evening");
+      }
+    };
+
+    updateGreeting();
+    // Update greeting every minute
+    const interval = setInterval(updateGreeting, 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -34,7 +53,7 @@ function TopBar({ view, searchQuery, onSearchChange, onSearchSubmit }) {
             ? "Your Library"
             : view === "search"
               ? "Search"
-              : "Good afternoon"}
+              : greeting}
         </h1>
 
         <p className="mt-1 text-sm text-zinc-400">

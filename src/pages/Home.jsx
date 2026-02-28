@@ -31,6 +31,7 @@ function Home() {
   const [currentVideoId, setCurrentVideoId] = useState(null)
   const [isLoadingVideo, setIsLoadingVideo] = useState(false)
   const [currentSongIndex, setCurrentSongIndex] = useState(-1)
+  const [showPlaylistMenu, setShowPlaylistMenu] = useState(null)
   const playerRef = useRef(null)
   const ytPlayerRef = useRef(null)
   const progressIntervalRef = useRef(null)
@@ -394,8 +395,22 @@ function Home() {
 
           {view === 'home' && (
             <>
-              <PlaylistGrid title="Made for you" items={madeForYou} />
-              <PlaylistGrid title="Recently played" items={recentPlaylists} />
+              <PlaylistGrid
+                title="Made for you"
+                items={madeForYou}
+                likedSongIds={likedSongIds}
+                onToggleLike={handleToggleLike}
+                onAddToPlaylist={handleAddToPlaylist}
+                playlists={playlists}
+              />
+              <PlaylistGrid
+                title="Recently played"
+                items={recentPlaylists}
+                likedSongIds={likedSongIds}
+                onToggleLike={handleToggleLike}
+                onAddToPlaylist={handleAddToPlaylist}
+                playlists={playlists}
+              />
               <SongTable
                 songs={songs}
                 currentSongId={currentSong?.id}
@@ -480,27 +495,114 @@ function Home() {
                 </p>
               )}
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {searchResults.map((song) => (
-                  <button
-                    key={song.id}
-                    onClick={() => handleSearchResultClick(song)}
-                    className="group flex flex-col rounded-md bg-zinc-900/60 p-3 text-left transition hover:bg-zinc-800"
-                  >
-                    {song.thumbnail && (
-                      <img
-                        src={song.thumbnail}
-                        alt={song.title}
-                        className="mb-3 aspect-video w-full rounded-md object-cover"
-                      />
-                    )}
-                    <div className="mb-1 line-clamp-2 text-sm font-semibold text-zinc-50">
-                      {song.title}
+                {searchResults.map((song) => {
+                  const isLiked = likedSongIds.includes(song.id)
+
+                  return (
+                    <div
+                      key={song.id}
+                      className="group relative flex flex-col rounded-md bg-zinc-900/60 p-3 text-left transition hover:bg-zinc-800"
+                    >
+                      <div
+                        className="relative cursor-pointer"
+                        onClick={() => handleSearchResultClick(song)}
+                      >
+                        {song.thumbnail && (
+                          <img
+                            src={song.thumbnail}
+                            alt={song.title}
+                            className="mb-3 aspect-video w-full rounded-md object-cover"
+                          />
+                        )}
+
+                        {/* Action buttons - show on hover */}
+                        <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          {/* Like button */}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleToggleLike(song.id)
+                            }}
+                            className="p-2 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-sm transition"
+                            title="Like"
+                          >
+                            <svg
+                              className={`h-6 w-6 ${
+                                isLiked
+                                  ? 'fill-emerald-500 text-emerald-500'
+                                  : 'fill-none text-white'
+                              }`}
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                            </svg>
+                          </button>
+
+                          {/* Add to playlist button */}
+                          <div className="relative">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                if (playlists.length === 0) {
+                                  alert('Create a playlist first by clicking "Create Playlist" in the sidebar!')
+                                  return
+                                }
+                                // Toggle playlist menu for this song
+                                const menuKey = `search-${song.id}`
+                                setShowPlaylistMenu(showPlaylistMenu === menuKey ? null : menuKey)
+                              }}
+                              className="p-2 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-sm transition"
+                              title={playlists.length === 0 ? "Create a playlist first" : "Add to playlist"}
+                            >
+                              <svg
+                                className="h-6 w-6 text-white"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                viewBox="0 0 24 24"
+                              >
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                              </svg>
+                            </button>
+
+                            {/* Playlist dropdown */}
+                            {showPlaylistMenu === `search-${song.id}` && playlists.length > 0 && (
+                              <div className="absolute right-0 top-full mt-1 z-50 w-48 rounded-md bg-zinc-800 shadow-lg border border-zinc-700">
+                                <div className="py-1">
+                                  <div className="px-3 py-2 text-xs font-semibold text-zinc-400 border-b border-zinc-700">
+                                    Add to playlist
+                                  </div>
+                                  {playlists.map((playlist) => (
+                                    <button
+                                      key={playlist.id}
+                                      onClick={(e) => {
+                                        e.stopPropagation()
+                                        handleAddToPlaylist(playlist.id, song.id)
+                                        setShowPlaylistMenu(null)
+                                      }}
+                                      className="w-full px-3 py-2 text-left text-sm text-zinc-200 hover:bg-zinc-700"
+                                    >
+                                      {playlist.name}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mb-1 line-clamp-2 text-sm font-semibold text-zinc-50">
+                        {song.title}
+                      </div>
+                      <div className="text-xs text-zinc-400">
+                        {song.primaryArtist}
+                      </div>
                     </div>
-                    <div className="text-xs text-zinc-400">
-                      {song.primaryArtist}
-                    </div>
-                  </button>
-                ))}
+                  )
+                })}
               </div>
             </section>
           )}
